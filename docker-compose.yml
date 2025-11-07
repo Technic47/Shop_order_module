@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  order_module:
+    env_file:
+      - "../.env"
+    build:
+      context: .
+    container_name: order_module
+    restart: always
+    ports:
+      - "9085:8080"
+    environment:
+      MODULE_GROUP_ID: ORDER_GROUP_ID
+#    deploy:
+#      mode: replicated
+#      replicas: 2
+
