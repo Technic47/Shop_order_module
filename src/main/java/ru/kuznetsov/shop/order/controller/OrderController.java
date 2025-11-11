@@ -11,7 +11,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
-import static ru.kuznetsov.shop.represent.common.KafkaConst.*;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.ORDER_SAVE_TOPIC;
 
 @RestController
 @RequestMapping("/order")
@@ -30,7 +31,9 @@ public class OrderController {
     public ResponseEntity<Collection<OrderDto>> getAll(
             @RequestParam(value = "customerId", required = false) UUID customerId
     ) {
-        return ResponseEntity.ok(orderService.getAllByCustomerId(customerId));
+        if (customerId != null) {
+            return ResponseEntity.ok(orderService.getAllByCustomerId(customerId));
+        } else return ResponseEntity.ok(orderService.findAll());
     }
 
     @PostMapping
@@ -55,7 +58,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteeStore(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         orderService.deleteById(id);
     }
 }
