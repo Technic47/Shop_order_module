@@ -39,6 +39,15 @@ public class OrderStatusController {
         return ResponseEntity.ok(orderStatusService.add(orderStatusDto));
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<Collection<OrderStatusDto>> createBatch(@RequestBody Collection<OrderStatusDto> OrderDtoCollection) {
+        return ResponseEntity.ok(
+                OrderDtoCollection.stream()
+                        .map(orderStatusService::add)
+                        .toList()
+        );
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         orderStatusService.deleteById(id);
