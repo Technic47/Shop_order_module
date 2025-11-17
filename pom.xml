@@ -11,7 +11,7 @@
 
     <groupId>ru.kuznetsov.shop</groupId>
     <artifactId>order</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>Order_module</name>
     <description>Order_module</description>
 
