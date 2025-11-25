@@ -12,6 +12,7 @@ services:
       - "9086:8080"
     environment:
       MODULE_GROUP_ID: ORDER_GROUP_ID
+      SERVICE_PORT: 9080
 #    deploy:
 #      mode: replicated
 #      replicas: 2
