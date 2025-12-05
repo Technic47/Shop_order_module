@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.github.technic47</groupId>
         <artifactId>shop-spring-boot-starter</artifactId>
-        <version>1.0.17</version>
+        <version>1.0.24</version>
     </parent>
 
     <groupId>ru.kuznetsov.shop</groupId>
     <artifactId>order</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>Order_module</name>
     <description>Order_module</description>
 
