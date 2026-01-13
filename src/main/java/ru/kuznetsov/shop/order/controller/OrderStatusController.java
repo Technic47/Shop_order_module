@@ -42,8 +42,8 @@ public class OrderStatusController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(@RequestParam("orderId") OrderStatusType orderId) {
-        return ResponseEntity.ok(orderStatusService.getAllByStatus(orderId));
+    public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(@RequestParam("status") OrderStatusType status) {
+        return ResponseEntity.ok(orderStatusService.getAllByStatus(status));
     }
 
     @PostMapping
