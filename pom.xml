@@ -6,31 +6,18 @@
     <parent>
         <groupId>io.github.technic47</groupId>
         <artifactId>shop-spring-boot-starter</artifactId>
-        <version>1.0.32</version>
+        <version>1.1.0</version>
     </parent>
 
     <groupId>ru.kuznetsov.shop</groupId>
     <artifactId>order</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <name>Order_module</name>
     <description>Order_module</description>
 
     <properties>
         <skipTests>true</skipTests>
-        <spring-cloud.version>2025.0.1</spring-cloud.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -40,6 +27,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
