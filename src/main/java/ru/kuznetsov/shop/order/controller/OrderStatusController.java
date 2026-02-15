@@ -53,8 +53,10 @@ public class OrderStatusController {
         switch (savedStatusDto.getStatus()) {
             case FORMED:
                 kafkaService.sendNewStatusMessage(savedStatusDto, ORDER_STATUS_FORMED_TOPIC);
+                break;
             case READY:
                 kafkaService.sendNewStatusMessage(savedStatusDto, ORDER_STATUS_READY_TOPIC);
+                break;
         }
 
         return ResponseEntity.ok(savedStatusDto);
