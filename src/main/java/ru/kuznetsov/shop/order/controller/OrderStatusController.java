@@ -10,8 +10,7 @@ import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
 import java.util.Collection;
 
-import static ru.kuznetsov.shop.represent.common.KafkaConst.ORDER_STATUS_FORMED_TOPIC;
-import static ru.kuznetsov.shop.represent.common.KafkaConst.ORDER_STATUS_READY_TOPIC;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.*;
 
 
 @RestController
@@ -56,6 +55,9 @@ public class OrderStatusController {
                 break;
             case READY:
                 kafkaService.sendNewStatusMessage(savedStatusDto, ORDER_STATUS_READY_TOPIC);
+                break;
+            case DELIVERED:
+                kafkaService.sendNewStatusMessage(savedStatusDto, ORDER_STATUS_DELIVERED_TOPIC);
                 break;
         }
 
