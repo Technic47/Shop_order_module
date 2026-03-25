@@ -7,19 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.shop.data.service.OrderService;
 import ru.kuznetsov.shop.kafka.service.KafkaService;
+import ru.kuznetsov.shop.order.api.OrderControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.OrderDto;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.ORDER_SAVE_TOPIC;
 
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
-public class OrderController {
+public class OrderController implements OrderControllerApi {
 
     private final OrderService orderService;
     private final KafkaService kafkaService;
@@ -28,16 +30,25 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.findById(id));
+        OrderDto byId = orderService.findById(id);
+        return byId == null ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(byId);
     }
 
     @GetMapping()
     public ResponseEntity<Collection<OrderDto>> getAll(
             @RequestParam(value = "customerId", required = false) UUID customerId
     ) {
+        Collection<OrderDto> result;
+
         if (customerId != null) {
-            return ResponseEntity.ok(orderService.getAllByCustomerId(customerId));
-        } else return ResponseEntity.ok(orderService.findAll());
+            result = orderService.getAllByCustomerId(customerId);
+        } else result = orderService.findAll();
+
+        return result.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
     }
 
     @PostMapping

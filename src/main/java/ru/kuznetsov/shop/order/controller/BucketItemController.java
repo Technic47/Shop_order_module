@@ -4,21 +4,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.shop.data.service.BucketItemService;
+import ru.kuznetsov.shop.order.api.BucketItemControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.BucketItemDto;
 
 import java.util.Collection;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @RestController
 @RequestMapping("/order/bucket")
 @RequiredArgsConstructor
-public class BucketItemController {
+public class BucketItemController implements BucketItemControllerApi {
 
     private final BucketItemService bucketItemService;
 
     @GetMapping("/{id}")
     public ResponseEntity<BucketItemDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(bucketItemService.findById(id));
+        BucketItemDto byId = bucketItemService.findById(id);
+        return byId == null ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(byId);
     }
 
     @GetMapping()
@@ -26,16 +32,22 @@ public class BucketItemController {
             @RequestParam(value = "customerId", required = false) UUID customerId,
             @RequestParam(value = "orderId", required = false) Long orderId
     ) {
+        Collection<BucketItemDto> result;
+
         if (customerId != null) {
-            return ResponseEntity.ok(bucketItemService.getAllByCustomerId(customerId));
+            result = bucketItemService.getAllByCustomerId(customerId);
         } else if (orderId != null) {
-            return ResponseEntity.ok(bucketItemService.getAllByOrderId(orderId));
-        } else return ResponseEntity.ok(bucketItemService.findAll());
+            result = bucketItemService.getAllByOrderId(orderId);
+        } else result = bucketItemService.findAll();
+
+        return result.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
     }
 
     @PostMapping
-    public ResponseEntity<BucketItemDto> create(@RequestBody BucketItemDto storeDto) {
-        return ResponseEntity.ok(bucketItemService.add(storeDto));
+    public ResponseEntity<BucketItemDto> create(@RequestBody BucketItemDto bucketItemDto) {
+        return ResponseEntity.ok(bucketItemService.add(bucketItemDto));
     }
 
     @PostMapping("/batch")

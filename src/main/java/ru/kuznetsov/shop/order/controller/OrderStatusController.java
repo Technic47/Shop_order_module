@@ -5,44 +5,62 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.shop.data.service.OrderStatusService;
 import ru.kuznetsov.shop.order.KafkaStatusService;
+import ru.kuznetsov.shop.order.api.OrderStatusControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.OrderStatusDto;
 import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
 import java.util.Collection;
+import java.util.List;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.*;
 
 
 @RestController
 @RequestMapping("/order/status")
 @RequiredArgsConstructor
-public class OrderStatusController {
+public class OrderStatusController implements OrderStatusControllerApi {
 
     private final OrderStatusService orderStatusService;
     private final KafkaStatusService kafkaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderStatusDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderStatusService.findById(id));
+        OrderStatusDto byId = orderStatusService.findById(id);
+        return byId == null ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(byId);
     }
 
     @GetMapping
     public ResponseEntity<Collection<OrderStatusDto>> getAll(
             @RequestParam(value = "orderId", required = false) Long orderId
     ) {
+        Collection<OrderStatusDto> result;
+
         if (orderId != null) {
-            return ResponseEntity.ok(orderStatusService.getAllByOrderId(orderId));
-        } else return ResponseEntity.ok(orderStatusService.findAll());
+            result = orderStatusService.getAllByOrderId(orderId);
+        } else result = orderStatusService.findAll();
+
+        return result.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
     }
 
     @GetMapping("/last")
     public ResponseEntity<OrderStatusDto> getLast(@RequestParam("orderId") Long orderId) {
-        return ResponseEntity.ok(orderStatusService.getLastByOrderId(orderId));
+        OrderStatusDto result = orderStatusService.getLastByOrderId(orderId);
+        return result == null ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
     }
 
     @GetMapping("/status")
     public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(@RequestParam("status") OrderStatusType status) {
-        return ResponseEntity.ok(orderStatusService.getAllByStatus(status));
+        List<OrderStatusDto> result = orderStatusService.getAllByStatus(status);
+        return result.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
     }
 
     @PostMapping
