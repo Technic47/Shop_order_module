@@ -9,6 +9,9 @@ import ru.kuznetsov.shop.order.api.OrderStatusControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.OrderStatusDto;
 import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,9 +61,30 @@ public class OrderStatusController implements OrderStatusControllerApi {
     @GetMapping("/status")
     public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(
             @RequestParam("status") OrderStatusType status,
-            @RequestParam("dateTime") String dateTime,
-            @RequestParam("direction") String direction) {
-        List<OrderStatusDto> result = orderStatusService.getAllByStatus(status);
+            @RequestParam(value = "dateTime", required = false) String dateTime,
+            @RequestParam(value = "direction", required = false) String direction) {
+        List<OrderStatusDto> result;
+
+        if (dateTime != null && !dateTime.isBlank()) {
+            if (direction == null || direction.isBlank()) {
+                return ResponseEntity.badRequest().build();
+            } else {
+                LocalDateTime date;
+                try {
+                    date = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+                } catch (DateTimeParseException e) {
+                    return ResponseEntity.badRequest().build();
+                }
+
+                result =
+                        switch (direction) {
+                            case "after" -> orderStatusService.getAllByStatusAfter(status, date);
+                            case "before" -> orderStatusService.getAllByStatusBefore(status, date);
+                            default -> throw new IllegalStateException("Unexpected value: " + direction);
+                        };
+            }
+        } else result = orderStatusService.getAllByStatus(status);
+
         return result.isEmpty() ?
                 ResponseEntity.status(NO_CONTENT).build()
                 : ResponseEntity.ok(result);
