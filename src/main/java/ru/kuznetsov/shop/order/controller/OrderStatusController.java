@@ -56,7 +56,10 @@ public class OrderStatusController implements OrderStatusControllerApi {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(@RequestParam("status") OrderStatusType status) {
+    public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(
+            @RequestParam("status") OrderStatusType status,
+            @RequestParam("dateTime") String dateTime,
+            @RequestParam("direction") String direction) {
         List<OrderStatusDto> result = orderStatusService.getAllByStatus(status);
         return result.isEmpty() ?
                 ResponseEntity.status(NO_CONTENT).build()

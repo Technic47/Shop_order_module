@@ -128,7 +128,23 @@ public interface OrderStatusControllerApi {
                             example = "CREATED, FORMED, READY, SHIPPED, DELIVERED, CANCELED, ERROR, AWAIT_PAYMENT, AWAIT_CUSTOMER"
                     )
             )
-            @RequestParam("status") OrderStatusType status);
+            @RequestParam("status") OrderStatusType status,
+            @Parameter(description = "Дата для поиска",
+                    schema = @Schema(
+                            description = "Дата",
+                            example = "before, after",
+                            type = "string",
+                            pattern ="yyyy-MM-dd'T'HH:mm:ss"
+                    )
+            )
+            @RequestParam("dateTime") String dateTime,
+            @Parameter(description = "Направление поиска по дате",
+                    schema = @Schema(
+                            description = "До или после указанной даты",
+                            example = "before, after"
+                    )
+            )
+            @RequestParam("direction") String direction);
 
     @Operation(summary = "Создание статуса заказа", description = "Создание статуса заказа")
     @ApiResponses(value = {
