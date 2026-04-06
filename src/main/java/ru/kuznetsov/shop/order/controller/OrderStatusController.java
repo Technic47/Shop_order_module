@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static ru.kuznetsov.shop.represent.common.GlobalConst.DATE_FORMAT;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.*;
 
 
@@ -71,7 +72,7 @@ public class OrderStatusController implements OrderStatusControllerApi {
             } else {
                 LocalDateTime date;
                 try {
-                    date = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+                    date = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(DATE_FORMAT));
                 } catch (DateTimeParseException e) {
                     return ResponseEntity.badRequest().build();
                 }
