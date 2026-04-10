@@ -125,16 +125,16 @@ public interface OrderStatusControllerApi {
             @Parameter(description = "Наименование статуса для поиска",
                     schema = @Schema(
                             description = "Статус",
-                            example = "CREATED, FORMED, READY, SHIPPED, DELIVERED, CANCELED, ERROR, AWAIT_PAYMENT, AWAIT_CUSTOMER"
+                            implementation = OrderStatusType.class
                     )
             )
             @RequestParam("status") OrderStatusType status,
             @Parameter(description = "Дата для поиска",
                     schema = @Schema(
                             description = "Дата",
-                            example = "before, after",
+                            example = "2026-04-04 16:40:00.605926",
                             type = "string",
-                            pattern ="yyyy-MM-dd'T'HH:mm:ss"
+                            pattern = "yyyy-MM-dd'T'HH:mm:ss"
                     )
             )
             @RequestParam("dateTime") String dateTime,

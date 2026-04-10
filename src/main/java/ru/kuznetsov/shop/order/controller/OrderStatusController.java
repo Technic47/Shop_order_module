@@ -111,9 +111,9 @@ public class OrderStatusController implements OrderStatusControllerApi {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<Collection<OrderStatusDto>> createBatch(@RequestBody Collection<OrderStatusDto> OrderDtoCollection) {
+    public ResponseEntity<Collection<OrderStatusDto>> createBatch(@RequestBody Collection<OrderStatusDto> OrderStatusDtoCollection) {
         return ResponseEntity.ok(
-                OrderDtoCollection.stream()
+                OrderStatusDtoCollection.stream()
                         .map(orderStatusService::add)
                         .toList()
         );

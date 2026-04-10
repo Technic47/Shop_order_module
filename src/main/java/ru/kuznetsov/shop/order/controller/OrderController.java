@@ -9,12 +9,16 @@ import ru.kuznetsov.shop.data.service.OrderService;
 import ru.kuznetsov.shop.kafka.service.KafkaService;
 import ru.kuznetsov.shop.order.api.OrderControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.OrderDto;
+import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static ru.kuznetsov.shop.represent.common.GlobalConst.DATE_FORMAT;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.ORDER_SAVE_TOPIC;
 
@@ -46,6 +50,36 @@ public class OrderController implements OrderControllerApi {
             result = orderService.getAllByCustomerId(customerId);
         } else result = orderService.findAll();
 
+        return result.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Collection<OrderDto>> getAllByStatusAndOptionalParams(
+            @RequestParam(value = "customerId", required = false) UUID customerId,
+            @RequestParam(value = "dateAfter", required = false) String dateAfter,
+            @RequestParam(value = "dateBefore", required = false) String dateBefore,
+            @RequestParam(value = "hasStatus") OrderStatusType hasStatus,
+            @RequestParam(value = "hasNotStatus") OrderStatusType hasNotStatus
+    ) {
+        LocalDateTime dateAfterParsed = null;
+        LocalDateTime dateBeforeParsed = null;
+
+        if (dateAfter != null && !dateAfter.isBlank()) {
+            dateAfterParsed= LocalDateTime.parse(dateAfter, DateTimeFormatter.ofPattern(DATE_FORMAT));
+        }
+        if (dateBefore != null && !dateBefore.isBlank()) {
+            dateBeforeParsed= LocalDateTime.parse(dateBefore, DateTimeFormatter.ofPattern(DATE_FORMAT));
+        }
+
+        Collection<OrderDto> result = orderService.getAllByStatusAndOptionalParams(
+                customerId,
+                dateAfterParsed,
+                dateBeforeParsed,
+                hasStatus,
+                hasNotStatus
+        );
         return result.isEmpty() ?
                 ResponseEntity.status(NO_CONTENT).build()
                 : ResponseEntity.ok(result);

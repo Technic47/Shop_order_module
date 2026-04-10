@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kuznetsov.shop.represent.dto.order.OrderDto;
+import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -71,6 +72,66 @@ public interface OrderControllerApi {
                     )
             )
             @RequestParam(value = "customerId", required = false) UUID customerId
+    );
+
+    @Operation(summary = "Получение всех заказов по статусам", description = "Получение всех заказов имеющих один статус и не имеющих другой.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderDto[].class)
+                    ),
+                    description = "Заказ"
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    content = @Content(
+                            schema = @Schema(hidden = true)
+                    ),
+                    description = "Заказы не найдены"
+            )
+    })
+    ResponseEntity<Collection<OrderDto>> getAllByStatusAndOptionalParams(
+            @Parameter(description = "Уникальный идентификатор пользователя для поиска",
+                    schema = @Schema(
+                            description = "Id пользователя (uuid)",
+                            example = "95381fbe-b068-4e88-abf5-85e96f64f507"
+                    )
+            )
+            @RequestParam(value = "customerId", required = false) UUID customerId,
+            @Parameter(description = "Фильтрация заказов после этой даты",
+                    schema = @Schema(
+                            description = "Дата",
+                            example = "2026-04-04 16:40:00.605926",
+                            type = "string",
+                            pattern = "yyyy-MM-dd'T'HH:mm:ss"
+                    )
+            )
+            @RequestParam(value = "dateAfter", required = false) String dateAfter,
+            @Parameter(description = "Фильтрация заказов до этой даты",
+                    schema = @Schema(
+                            description = "Дата",
+                            example = "2026-04-04 16:40:00.605926",
+                            type = "string",
+                            pattern = "yyyy-MM-dd'T'HH:mm:ss"
+                    )
+            )
+            @RequestParam(value = "dateBefore", required = false) String dateBefore,
+            @Parameter(description = "Статус, который ЕСТЬ у заказа",
+                    schema = @Schema(
+                            description = "Статус",
+                            implementation = OrderStatusType.class
+                    )
+            )
+            @RequestParam(value = "dateBefore") OrderStatusType hasStatus,
+            @Parameter(description = "Статус, которого НЕТ у заказа",
+                    schema = @Schema(
+                            description = "Статус",
+                            implementation = OrderStatusType.class
+                    )
+            )
+            @RequestParam(value = "dateBefore") OrderStatusType hasNotStatus
     );
 
     @Operation(summary = "Создание заказа", description = "Создание заказа")
