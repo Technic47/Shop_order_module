@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kuznetsov.shop.represent.dto.order.OrderDto;
+import ru.kuznetsov.shop.represent.dto.order.OrderThinDto;
 import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
 import java.util.Collection;
@@ -92,7 +93,7 @@ public interface OrderControllerApi {
                     description = "Заказы не найдены"
             )
     })
-    ResponseEntity<Collection<OrderDto>> getAllByStatusAndOptionalParams(
+    ResponseEntity<Collection<OrderThinDto>> getAllByStatusAndOptionalParams(
             @Parameter(description = "Уникальный идентификатор пользователя для поиска",
                     schema = @Schema(
                             description = "Id пользователя (uuid)",

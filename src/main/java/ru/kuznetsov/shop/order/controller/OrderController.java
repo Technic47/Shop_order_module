@@ -9,6 +9,7 @@ import ru.kuznetsov.shop.data.service.OrderService;
 import ru.kuznetsov.shop.kafka.service.KafkaService;
 import ru.kuznetsov.shop.order.api.OrderControllerApi;
 import ru.kuznetsov.shop.represent.dto.order.OrderDto;
+import ru.kuznetsov.shop.represent.dto.order.OrderThinDto;
 import ru.kuznetsov.shop.represent.enums.OrderStatusType;
 
 import java.time.LocalDateTime;
@@ -55,8 +56,8 @@ public class OrderController implements OrderControllerApi {
                 : ResponseEntity.ok(result);
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<Collection<OrderDto>> getAllByStatusAndOptionalParams(
+    @GetMapping("/hasStatus")
+    public ResponseEntity<Collection<OrderThinDto>> getAllByStatusAndOptionalParams(
             @RequestParam(value = "customerId", required = false) UUID customerId,
             @RequestParam(value = "dateAfter", required = false) String dateAfter,
             @RequestParam(value = "dateBefore", required = false) String dateBefore,
@@ -67,13 +68,13 @@ public class OrderController implements OrderControllerApi {
         LocalDateTime dateBeforeParsed = null;
 
         if (dateAfter != null && !dateAfter.isBlank()) {
-            dateAfterParsed= LocalDateTime.parse(dateAfter, DateTimeFormatter.ofPattern(DATE_FORMAT));
+            dateAfterParsed = LocalDateTime.parse(dateAfter, DateTimeFormatter.ofPattern(DATE_FORMAT));
         }
         if (dateBefore != null && !dateBefore.isBlank()) {
-            dateBeforeParsed= LocalDateTime.parse(dateBefore, DateTimeFormatter.ofPattern(DATE_FORMAT));
+            dateBeforeParsed = LocalDateTime.parse(dateBefore, DateTimeFormatter.ofPattern(DATE_FORMAT));
         }
 
-        Collection<OrderDto> result = orderService.getAllByStatusAndOptionalParams(
+        Collection<OrderThinDto> result = orderService.getAllByStatusAndOptionalParams(
                 customerId,
                 dateAfterParsed,
                 dateBeforeParsed,
