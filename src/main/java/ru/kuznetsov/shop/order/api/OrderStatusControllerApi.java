@@ -144,7 +144,15 @@ public interface OrderStatusControllerApi {
                             example = "before, after"
                     )
             )
-            @RequestParam("direction") String direction);
+            @RequestParam("direction") String direction,
+            @Parameter(description = "Лимит по выдаче",
+                    schema = @Schema(
+                            description = "Ограничение по количеству результатов",
+                            example = "100",
+                            type = "integer"
+                    )
+            )
+            @RequestParam("direction") Integer limit);
 
     @Operation(summary = "Создание статуса заказа", description = "Создание статуса заказа")
     @ApiResponses(value = {

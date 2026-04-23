@@ -63,7 +63,8 @@ public class OrderStatusController implements OrderStatusControllerApi {
     public ResponseEntity<Collection<OrderStatusDto>> getAllByStatus(
             @RequestParam("status") OrderStatusType status,
             @RequestParam(value = "dateTime", required = false) String dateTime,
-            @RequestParam(value = "direction", required = false) String direction) {
+            @RequestParam(value = "direction", required = false) String direction,
+            @RequestParam(value = "limit", required = false) Integer limit){
         List<OrderStatusDto> result;
 
         if (dateTime != null && !dateTime.isBlank()) {
@@ -79,8 +80,8 @@ public class OrderStatusController implements OrderStatusControllerApi {
 
                 result =
                         switch (direction) {
-                            case "after" -> orderStatusService.getAllByStatusAfter(status, date);
-                            case "before" -> orderStatusService.getAllByStatusBefore(status, date);
+                            case "after" -> orderStatusService.getAllByStatusAfter(status, date, limit);
+                            case "before" -> orderStatusService.getAllByStatusBefore(status, date, limit);
                             default -> throw new IllegalStateException("Unexpected value: " + direction);
                         };
             }
